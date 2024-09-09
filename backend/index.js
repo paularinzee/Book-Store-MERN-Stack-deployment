@@ -1,10 +1,12 @@
 import express from 'express';
-import { PORT, mongoDBURL } from './config.js';
+require('dotenv').config();
+// import { PORT, mongoDBURL } from './config.js';
 import mongoose from 'mongoose';
 import booksRoute from './routes/booksRoute.js';
 import cors from 'cors';
-
+// dotenv.config({path: './.env'});
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware for parsing request body
 app.use(express.json());
@@ -29,7 +31,10 @@ app.get('/', (request, response) => {
 app.use('/books', booksRoute);
 
 mongoose
-  .connect(mongoDBURL)
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('App connected to database');
     app.listen(PORT, () => {
@@ -39,3 +44,12 @@ mongoose
   .catch((error) => {
     console.log(error);
   });
+
+// mongoose.connect( DB, {
+//   useNewUrlParser: true,
+//   useCreateIndex: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false,
+//   family: 4,
+  
+// })

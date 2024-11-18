@@ -19,7 +19,7 @@ jobs:
         port: ${{ secrets.PORT }}
         command_timeout: 10m
         script: |
-            docker pull harisheoran/backend_img:master
+            docker pull paularinze/backend_img:master
             docker compose -f docker-compose.yaml up -d
             docker container prune -f
             docker image prune -f

@@ -1,12 +1,10 @@
-name: Push backend image to Image registry
+name: Push Frontend image to Image registry
 
 on:
-  workflow_dispatch:
-  workflow_call:
-  # push:
-  #   branches: ["master"]
-  #   paths:
-  #     - 'backend/**'
+  push:
+    branches: ["master"]
+    paths:
+      - 'frontend/**'
 
 env: 
   REGISTRY: docker.io
@@ -38,15 +36,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: paularinze/book-backend
-          tags: latest
+          images: ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.FRONTEND_IMG}}
 
       - name: Build & push the image
         id: pushbuild
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./frontend
+          file: ./frontend/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -55,5 +52,5 @@ jobs:
 
   deploy:
     needs: push_to_registry
-    # uses: ./.github/workflows/cd-backend.yaml
+    uses: ./.github/workflows/cd-frontend.yaml
     secrets: inherit

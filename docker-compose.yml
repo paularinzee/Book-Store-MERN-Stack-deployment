@@ -34,7 +34,7 @@ services:
         condition: on-failure
 
   frontend:
-    image: harisheoran/book-frontend:latest
+    image: paularinze/book-frontend:latest
     ports:
       - "3000:3000"
     networks:

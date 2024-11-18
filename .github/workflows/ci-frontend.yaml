@@ -1,14 +1,15 @@
 name: Push Frontend image to Image registry
 
 on:
-  push:
-    branches: ["master"]
-    paths:
-      - 'frontend/**'
+  [workflow_dispatch]
+  # push:
+  #   branches: ["master"]
+  #   paths:
+  #     - 'frontend/**'
 
 env: 
   REGISTRY: docker.io
-  IMG_NAME: ${{secrets.BACKEND_IMG}}
+  # IMG_NAME: ${{secrets.BACKEND_IMG}}
 
 jobs:
   push_to_registry:
@@ -32,11 +33,11 @@ jobs:
             username: ${{secrets.DOCKERHUB_USERNAME}}
             password: ${{secrets.DOCKERHUB_PASSWORD}}
       
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.FRONTEND_IMG}}
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: ${{secrets.DOCKERHUB_USERNAME}}/${{secrets.FRONTEND_IMG}}
 
       - name: Build & push the image
         id: pushbuild
@@ -45,12 +46,12 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: ${{ secrets.DOCKER_USERNAME }}/book-store-frontend:latest
+          # labels: ${{ steps.meta.outputs.labels }}
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
-  deploy:
-    needs: push_to_registry
-    uses: ./.github/workflows/cd-frontend.yaml
-    secrets: inherit
+  # deploy:
+  #   needs: push_to_registry
+  #   uses: ./.github/workflows/cd-frontend.yaml
+  #   secrets: inherit
